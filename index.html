@@ -1556,6 +1556,47 @@
         const SUPABASE_URL = "https://jlwvxktxkgitmssxwszb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn";
 const supabase = supabase.createClient(sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn, sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn);
+// Автоматический перехват отправки формы
+document.addEventListener("DOMContentLoaded", () => {
+    // Находим форму записи по тегу или id
+    const bookingForm = document.querySelector("form") || document.getElementById("booking-form");
+    
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Останавливаем перезагрузку страницы
+            
+            // Собираем данные из полей вашей формы
+            // Проверьте, чтобы у ваших <input> в HTML были соответствующие id или class
+            const clientName = document.querySelector('input[type="text"]') ? document.querySelector('input[type="text"]').value : "Тест";
+            const clientPhone = document.querySelector('input[type="tel"]') ? document.querySelector('input[type="tel"]').value : "Без телефона";
+            const selectedCategory = document.querySelector('input[name="service"]:checked') ? document.querySelector('input[name="service"]:checked').parentElement.textContent.trim() : "Стрижка";
+            
+            try {
+                // Отправляем данные в вашу таблицу bookings
+                const { data, error } = await supabase
+                    .from('bookings')
+                    .insert([
+                        { 
+                            name: clientName, 
+                            phone: clientPhone, 
+                            category: selectedCategory,
+                            date: new Date().toLocaleString("ru-RU") // Записываем текущую дату и время
+                        }
+                    ]);
+
+                if (error) {
+                    console.error("Ошибка Supabase:", error.message);
+                    alert("Ошибка при записи: " + error.message);
+                } else {
+                    alert("Вы успешно записались!");
+                    bookingForm.reset(); // Очищаем форму
+                }
+            } catch (err) {
+                console.error("Критическая ошибка:", err);
+            }
+        });
+    }
+});
 
     </script>
 </body>
