@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViLera Hair & Style — Премиум студия в Слониме</title>
+    <style>
+        /* 1. ОБЩИЙ ДИЗАЙН И ВИЗУАЛЬНЫЙ СТИЛЬ (Monochrome Minimalist) */
+        :root {
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-muted: #8c8c8c;
+            --border-color: #262626;
+            --accent-hover: #333333;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* HTML5 Canvas Живой дым */
+        #smoke-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        button, .btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 15px 35px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover, .btn:hover {
+            background: var(--text-main);
+            color: var(--bg-color);
+        }
+
+        /* ШАПКА С ОРИГИНАЛЬНЫМ ЛОГОТИПОМ */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 110px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo-svg {
+            height: 95px;
+            width: auto;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--text-muted);
+        }
+
+        .instagram-link svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-main);
+            transition: fill 0.3s;
+            display: block;
+        }
+
+        .instagram-link:hover svg {
+            fill: var(--text-muted);
+        }
+
+        /* ГЛАВНЫЙ БЛОК (HERO) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-top: 110px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 200;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* БЛОК О НАС */
+        .about-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        /* ИНФОГРАФИКА */
+        .infographics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card {
+            border: 1px solid var(--border-color);
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(5, 5, 5, 0.6);
+        }
+
+        .info-card .num {
+            font-size: 2.5rem;
+            font-weight: 200;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .info-card .label {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* НАПРАВЛЕНИЯ РАБОТЫ */
+        .services-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .service-card {
+            border: 1px solid var(--border-color);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(5, 5, 5, 0.6);
+        }
+
+        .service-card:hover, .service-card.active {
+            border-color: var(--text-main);
+            background: #121212;
+        }
+
+        .service-card h3 {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .service-display {
+            border: 1px solid var(--border-color);
+            padding: 50px;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(5, 5, 5, 0.4);
+        }
+
+        .service-display h3 {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .service-display p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        /* ФОРМА ОНЛАЙН-ЗАПИСИ */
+        .booking-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            background: rgba(5, 5, 5, 0.8);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--text-main);
+            transition: width 0.4s ease;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+        }
+
+        .radio-tabs {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-tabs label {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .radio-tabs input[type="radio"] {
+            display: none;
+        }
+
+        .radio-tabs input[type="radio"]:checked + label {
+            border-color: var(--text-main);
+            background: #121212;
+        }
+
+        .input-text {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-text:focus {
+            outline: none;
+            border-color: var(--text-main);
+        }
+
+        /* Ручной календарь */
+        .calendar-widget {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .weekday {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .day {
+            padding: 10px 0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .day:hover:not(.disabled) {
+            border-color: var(--text-muted);
+        }
+
+        .day.active {
+            background: var(--text-main);
+            color: var(--bg-color);
+        }
+
+        .day.disabled {
+            color: #333333;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .booking-notice {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* ОТЗЫВЫ И СТАБИЛЬНЫЙ РЕЙТИНГ */
+        .rating-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 40px;
+            background: rgba(5, 5, 5, 0.4);
+        }
+
+        .stars-stats h4 {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .stars-display {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .search-box {
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .reviews-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .review-form-panel {
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            background: rgba(5, 5, 5, 0.6);
+        }
+
+        .star-rating-select {
+            display: flex;
+            gap: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .star-rating-select span {
+            transition: color 0.2s;
+            color: #333;
+        }
+
+        .star-rating-select span.hovered,
+        .star-rating-select span.selected {
+            color: var(--text-main);
+        }
+
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .review-item {
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            background: rgba(5, 5, 5, 0.4);
+        }
+
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .review-author {
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .review-date {
+            color: var(--text-muted);
+        }
+
+        .review-text {
+            color: #d1d1d1;
+            font-size: 0.95rem;
+        }
+
+        /* КОНТАКТЫ */
+        .contacts-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .info-block h4 {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .info-block p, .info-block a {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 300;
+        }
+
+        .info-block a:hover {
+            text-decoration: underline;
+        }
+
+        .map-container {
+            height: 400px;
+            border: 1px solid var(--border-color);
+            filter: grayscale(1) invert(1) contrast(1.2);
+        }
+
+        /* ФУТЕР И ВСТРОЕННАЯ АДМИН-ПАНЕЛЬ В ПОДВАЛЕ */
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-color);
+            background: #000;
+        }
+
+        footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .admin-trigger-link {
+            color: #1a1a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .admin-trigger-link:hover {
+            color: var(--text-muted);
+        }
+
+        .footer-admin-container {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            background: #050505;
+            padding: 30px;
+            display: none;
+        }
+
+        .admin-auth-form-inline {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .admin-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .admin-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .admin-tab.active {
+            color: var(--text-main);
+            border-color: var(--text-main);
+        }
+
+        .admin-content {
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .admin-content.active {
+            display: block;
+        }
+
+        .admin-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .admin-table th, .admin-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .admin-table th {
+            background: #121212;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .admin-table a {
+            color: var(--text-main);
+        }
+
+        .btn-danger {
+            border-color: #331111;
+            color: #ff5555;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+        }
+
+        .btn-danger:hover {
+            background: #ff5555;
+            color: #000;
+        }
+
+        /* МОДАЛЬНЫЕ ОКНА */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            border: 1px solid var(--border-color);
+            background: #050505;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        /* COOKIE БАННЕР */
+        .cookie-banner {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background: #050505;
+            border-top: 1px solid var(--border-color);
+            padding: 20px 0;
+            z-index: 999;
+            transition: bottom 0.4s ease;
+        }
+
+        .cookie-banner.active {
+            bottom: 0;
+        }
+
+        .cookie-banner .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cookie-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .cookie-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cookie-btns button {
+            padding: 8px 20px;
+            font-size: 0.75rem;
+        }
+
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 900px) {
+            .about-layout, .services-layout, .reviews-layout, .contacts-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .hero h1 { font-size: 2.5rem; }
+            .rating-dashboard { flex-direction: column; gap: 20px; align-items: flex-start; }
+            .search-box { max-width: 100%; }
+            nav { display: none; }
+            header .container { height: 80px; }
+            .logo-wrap svg { height: 65px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="smoke-canvas"></canvas>
+
+    <header>
+        <div class="container">
+            <div class="logo-wrap">
+                <!-- ОРИГИНАЛЬНЫЙ ВЕКТОРНЫЙ ЛОГОТИП СТУДИИ VILERA -->
+                <svg viewBox="0 0 450 170" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <style>
+                            .script-font { font-family: 'Great Vibes', 'Playfair Display', 'Georgia', cursive, serif; font-style: italic; fill: #ffffff; }
+                            .sub-font { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-weight: 300; letter-spacing: 4px; fill: #ffffff; text-transform: uppercase; font-size: 11px; }
+                            .line-decor { stroke: #ffffff; stroke-width: 1; fill: none; stroke-linecap: round; }
+                        </style>
+                    </defs>
+                    <g transform="translate(10, 10)">
+                        <text x="35" y="95" class="script-font" font-size="105">ViLera</text>
+                        <line x1="110" y1="128" x2="185" y2="128" class="line-decor" />
+                        <text x="195" y="132" class="script-font" font-size="24">&amp;</text>
+                        <line x1="218" y1="128" x2="293" y2="128" class="line-decor" />
+                        <text x="50" y="129" class="sub-font">HAIR</text>
+                        <text x="303" y="129" class="sub-font">STYLE</text>
+                        <path d="M 110,128 C 100,135 70,135 60,128" class="line-decor" stroke-width="0.7"/>
+                        <path d="M 293,128 C 303,135 333,135 343,128" class="line-decor" stroke-width="0.7"/>
+                    </g>
+                </svg>
+            </div>
+            <nav>
+                <a href="#about">О нас</a>
+                <a href="#services">Услуги</a>
+                <a href="#booking">Запись</a>
+                <a href="#reviews">Отзывы</a>
+                <a href="#contacts">Контакты</a>
+                <a href="https://www.instagram.com/vilera_slonim/" target="_blank" class="instagram-link" rel="noreferrer">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>ViLera Hair & Style</h1>
+            <p>Премиальная концептуальная студия красоты в Слониме</p>
+            <a href="#booking" class="btn" style="text-decoration: none; display: inline-block;">Онлайн запись</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2>О нас</h2>
+            <div class="about-layout">
+                <div class="about-text">
+                    <h3>Философия совершенства и монохромного стиля</h3>
+                    <p>ViLera Hair & Style — это не просто салон красоты, это пространство эстетики, где строгость минимализма встречается с безупречным премиальным сервисом. Мы создали место для тех, кто ценит чистоту линий, индивидуальный подход и высокий профессионализм.</p>
+                    <p>Наши мастера непрерывно совершенствуют свои навыки, отслеживая мировые тренды индустрии, чтобы предложить вам передовые техники стрижек, сложные окрашивания и концептуальный стайлинг.</p>
+                </div>
+                <div class="infographics-grid">
+                    <div class="info-card">
+                        <div class="num">100%</div>
+                        <div class="label">Премиум уход</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="num">4</div>
+                        <div class="label">Топ направления</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="num">7/0</div>
+                        <div class="label">Без выходных</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="num">2026</div>
+                        <div class="label">Тренды стиля</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <h2>Направления работы</h2>
+            <div class="services-layout">
+                <div class="services-grid">
+                    <div class="service-card active" data-cat="men">
+                        <h3>Мужской зал</h3>
+                    </div>
+                    <div class="service-card" data-cat="women">
+                        <h3>Женский зал</h3>
+                    </div>
+                    <div class="service-card" data-cat="braids">
+                        <h3>Брейды и Косички</h3>
+                    </div>
+                    <div class="service-card" data-cat="kids">
+                        <h3>Детский зал</h3>
+                    </div>
+                </div>
+                <div class="service-display">
+                    <h3 id="display-title">Мужской зал</h3>
+                    <p id="display-text">Современные мужские стрижки, моделирование бороды и усов от мастеров высокой квалификации. Классика и тренды в премиальной атмосфере комфорта.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking">
+        <div class="container">
+            <h2>Онлайн Запись</h2>
+            <div class="booking-wrapper">
+                <div class="progress-container">
+                    <div class="progress-bar" id="form-progress"></div>
+                </div>
+                <form id="appointment-form">
+                    <div class="form-group">
+                        <label>Категория записи</label>
+                        <div class="radio-tabs">
+                            <input type="radio" id="cat-adult" name="booking-cat" value="Взрослая" checked>
+                            <label for="cat-adult">Взрослая</label>
+                            <input type="radio" id="cat-child" name="booking-cat" value="Детская">
+                            <label for="cat-child">Детская</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-name">Ваше имя</label>
+                        <input type="text" id="client-name" class="input-text" autocomplete="off" placeholder="Введите имя">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-phone">Номер телефона</label>
+                        <input type="tel" id="client-phone" class="input-text" autocomplete="off" placeholder="+375 (XX) XXX-XX-XX">
+                    </div>
+                    <div class="form-group">
+                        <label>Выберите дату</label>
+                        <div class="calendar-widget">
+                            <div class="calendar-header" id="calendar-month-year">Ноябрь 2026</div>
+                            <div class="calendar-grid" id="calendar-days-grid"></div>
+                        </div>
+                    </div>
+                    <p class="booking-notice">После отправки формы — Мы вам позвоним!</p>
+                    <button type="submit" class="btn btn-full">Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews">
+        <div class="container">
+            <h2>Отзывы</h2>
+            
+            <div class="rating-dashboard">
+                <div class="stars-stats">
+                    <div style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;">Наш рейтинг звезд</div>
+                    <h4 id="average-rating-num">0.0 / 5</h4>
+                    <div class="stars-display" id="average-stars-render">☆☆☆☆☆</div>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="review-search" class="input-text" placeholder="Поиск по отзывам...">
+                </div>
+            </div>
+
+            <div class="reviews-layout">
+                <div class="review-form-panel">
+                    <h3 style="font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-weight: 400;">Оставить отзыв</h3>
+                    <form id="review-form">
+                        <div class="form-group">
+                            <label for="rev-name">Имя</label>
+                            <input type="text" id="rev-name" class="input-text" required placeholder="Ваше имя">
+                        </div>
+                        <div class="form-group">
+                            <label>Ваша оценка</label>
+                            <div class="star-rating-select" id="star-picker">
+                                <span data-value="1">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="5">★</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rev-text">Текст отзыва</label>
+                            <textarea id="rev-text" class="input-text" rows="4" required placeholder="Поделитесь вашими впечатлениями..." style="resize: vertical; font-family: var(--font-family);"></textarea>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Опубликовать</button>
+                    </form>
+                </div>
+                <div class="reviews-list" id="reviews-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacts">
+        <div class="container">
+            <h2>Контакты</h2>
+            <div class="contacts-layout">
+                <div class="contact-info">
+                    <div class="info-block">
+                        <h4>Адрес</h4>
+                        <p>г. Слоним, ул. Брестская, 69/1</p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Телефон</h4>
+                        <p><a href="tel:+375298211240">+375 (29) 821-12-40</a></p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Время работы</h4>
+                        <p>09:00 — 20:00 (Без выходных)</p>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <iframe src="https://yandex.ru/map-widget/v1/?ll=25.311394%2C53.082725&mode=search&text=%D0%A1%D0%BB%D0%BE%D0%BD%D0%B8%D0%BC%2C%20%D0%91%D1%80%D0%B5%D1%81%D1%82%D1%81%D0%BA%D0%B0%D1%8F%2069%2F1&z=16" width="100%" height="100%" frameborder="0" allowfullscreen="true" style="position:relative;"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div>&copy; 2026 ViLera Hair & Style. Все права защищены.</div>
+            <div class="admin-trigger-link" id="footer-admin-trigger">Панель управления</div>
+            
+            <div class="footer-admin-container" id="footer-admin-container">
+                <div id="admin-auth-section" class="admin-auth-form-inline">
+                    <h3 style="font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-weight:400; text-align: center;">Авторизация Администратора</h3>
+                    <div class="form-group">
+                        <label>Логин</label>
+                        <input type="text" id="auth-login" class="input-text" style="padding:10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль</label>
+                        <input type="password" id="auth-pass" class="input-text" style="padding:10px;">
+                    </div>
+                    <button class="btn" style="width:100%; padding:10px;" onclick="handleAdminLogin()">Войти</button>
+                </div>
+
+                <div id="admin-dashboard-section" style="display: none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                        <h3 style="font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; font-weight:400;">Панель управления</h3>
+                        <button class="btn" style="padding:5px 15px; font-size:0.75rem;" onclick="handleAdminLogout()">Выйти</button>
+                    </div>
+                    
+                    <div class="admin-tabs">
+                        <div class="admin-tab active" id="tab-btn-bookings" onclick="switchAdminTab('bookings')">Заявки на запись</div>
+                        <div class="admin-tab" id="tab-btn-reviews" onclick="switchAdminTab('reviews')">Модерация отзывов</div>
+                    </div>
+
+                    <div class="admin-content active" id="admin-tab-bookings">
+                        <div class="admin-actions-bar">
+                            <div>
+                                <select id="admin-filter-booking-cat" class="input-text" style="padding: 5px 10px; font-size:0.8rem; width:auto;" onchange="renderAdminBookings()">
+                                    <option value="Все">Все категории</option>
+                                    <option value="Взрослая">Взрослая</option>
+                                    <option value="Детская">Детская</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-danger" onclick="clearAllBookings()">Очистить журнал</button>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Категория</th>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-bookings-rows"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="admin-content" id="admin-tab-reviews">
+                        <div class="admin-actions-bar" style="justify-content: flex-end;">
+                            <button class="btn btn-danger" onclick="clearAllReviews()">Удалить все отзывы</button>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Автор</th>
+                                    <th>Текст</th>
+                                    <th>Оценка</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reviews-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="modal-success">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('modal-success')">&times;</span>
+            <h3 style="font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; font-weight: 300;">Заявка принята</h3>
+            <p style="color: var(--text-muted);">Спасибо! Мы свяжемся с Вами в ближайшее время для подтверждения деталей.</p>
+        </div>
+    </div>
+
+    <div class="cookie-banner" id="cookie-popup">
+        <div class="container">
+            <div class="cookie-text">Мы используем файлы LocalStorage для корректного сохранения ваших бронирований и отзывов непосредственно в браузере.</div>
+            <div class="cookie-btns">
+                <button class="btn" onclick="acceptCookies()">Принять</button>
+                <button class="btn" style="border-color:#333; color:#666;" onclick="rejectCookies()">Отклонить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ДАТНЫЙ КОНТЕКСТ ДЛЯ ОГРАНИЧЕНИЙ */
+        const CURRENT_YEAR = 2026;
+        const CURRENT_MONTH = 10; // Ноябрь (индекс 10)
+        const CURRENT_DAY = 7;
+
+        /* БАЗА ДАННЫХ (localStorage) */
+        let db = {
+            bookings: JSON.parse(localStorage.getItem('vilera_bookings')) || [],
+            reviews: JSON.parse(localStorage.getItem('vilera_reviews')) || []
+        };
+
+        function saveDB() {
+            localStorage.setItem('vilera_bookings', JSON.stringify(db.bookings));
+            localStorage.setItem('vilera_reviews', JSON.stringify(db.reviews));
+        }
+
+        /* 1. ЭФФЕКТ ЖИВОГО ДЫМА (HTML5 Canvas) */
+        const canvas = document.getElementById('smoke-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class SmokeParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 80 + 40;
+                this.speedY = Math.random() * 0.4 + 0.2;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.15 + 0.05;
+                this.growth = Math.random() * 0.05 + 0.02;
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.size += this.growth;
+                if (this.y < -this.size) {
+                    this.y = canvas.height + Math.random() * 50;
+                    this.x = Math.random() * canvas.width;
+                    this.size = Math.random() * 80 + 40;
+                    this.opacity = Math.random() * 0.15 + 0.05;
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+                gradient.addColorStop(0, `rgba(200, 200, 200, ${this.opacity})`);
+                gradient.addColorStop(0.5, `rgba(100, 100, 100, ${this.opacity * 0.4})`);
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = gradient;
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initSmoke() {
+            particles = [];
+            for (let i = 0; i < 35; i++) {
+                particles.push(new SmokeParticle());
+            }
+        }
+
+        function animateSmoke() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateSmoke);
+        }
+        initSmoke();
+        animateSmoke();
+
+        /* 2. БЛОК НАПРАВЛЕНИЯ РАБОТЫ */
+        const serviceData = {
+            men: {
+                title: "Мужской зал",
+                text: "Современные мужские стрижки, моделирование бороды и усов от мастеров высокой квалификации. Классика и тренды в премиальной атмосфере комфорта."
+            },
+            women: {
+                title: "Женский зал",
+                text: "Сложные окрашивания, модельные стрижки, уходовые ритуалы для здоровья волос и безупречные укладки. Подчеркнем вашу естественную индивидуальность."
+            },
+            braids: {
+                title: "Брейды и Косички",
+                text: "Профессиональное плетение брейдов, афрокосичек и канекалона любого уровня сложности. Яркие, стильные образы со сверхточной проработкой деталей."
+            },
+            kids: {
+                title: "Детский зал",
+                text: "Бережный подход к самым маленьким гостям. Быстрые, аккуратные и современные стрижки в игровой, расслабленной и дружелюбной атмосфере."
+            }
+        };
+
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const cat = this.getAttribute('data-cat');
+                document.getElementById('display-title').innerText = serviceData[cat].title;
+                document.getElementById('display-text').innerText = serviceData[cat].text;
+            });
+        });
+
+        /* 3. ИНТЕРАКТИВНАЯ ФОРМА ОНЛАЙН-ЗАПИСИ И РУЧНОЙ КАЛЕНДАРЬ */
+        let selectedDateStr = "";
+
+        function generateCalendar() {
+            const grid = document.getElementById('calendar-days-grid');
+            grid.innerHTML = "";
+
+            const daysInMonth = new Date(CURRENT_YEAR, CURRENT_MONTH + 1, 0).getDate();
+            const startWeekDay = new Date(CURRENT_YEAR, CURRENT_MONTH, 1).getDay();
+            const shift = startWeekDay === 0 ? 6 : startWeekDay - 1;
+
+            const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            weekDays.forEach(wd => {
+                let div = document.createElement('div');
+                div.className = "weekday";
+                div.innerText = wd;
+                grid.appendChild(div);
+            });
+
+            for (let i = 0; i < shift; i++) {
+                let empty = document.createElement('div');
+                grid.appendChild(empty);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                let cell = document.createElement('div');
+                cell.className = "day";
+                cell.innerText = day;
+
+                if (day < CURRENT_DAY) {
+                    cell.classList.add('disabled');
+                } else {
+                    cell.addEventListener('click', function() {
+                        document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+                        this.classList.add('active');
+                        selectedDateStr = `${day.toString().padStart(2, '0')}.11.2026`;
+                        updateProgressBar();
+                    });
+                }
+                grid.appendChild(cell);
+            }
+        }
+        generateCalendar();
+
+        const nameInput = document.getElementById('client-name');
+        const phoneInput = document.getElementById('client-phone');
+
+        function updateProgressBar() {
+            let score = 0;
+            if (nameInput.value.trim().length > 0) score += 33.3;
+            if (phoneInput.value.trim().length > 0) score += 33.3;
+            if (selectedDateStr !== "") score += 33.4;
+            document.getElementById('form-progress').style.width = `${Math.min(score, 100)}%`;
+        }
+
+        nameInput.addEventListener('input', updateProgressBar);
+        phoneInput.addEventListener('input', updateProgressBar);
+
+        document.getElementById('appointment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!nameInput.value.trim() || !phoneInput.value.trim() || !selectedDateStr) {
+                alert("Пожалуйста, заполните Имя, Телефон и выберите День в календаре.");
+                return;
+            }
+
+            const newBooking = {
+                id: Date.now(),
+                date: selectedDateStr,
+                category: document.querySelector('input[name="booking-cat"]:checked').value,
+                name: nameInput.value.trim(),
+                phone: phoneInput.value.trim()
+            };
+
+            db.bookings.push(newBooking);
+            saveDB();
+            renderAdminBookings();
+
+            this.reset();
+            selectedDateStr = "";
+            document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+            updateProgressBar();
+
+            openModal('modal-success');
+        });
+
+        /* 4. СИСТЕМА ОТЗЫВОВ И РЕЙТИНГ ЗВЕЗД (ГАРАНТИРОВАННОЕ ИСКЛЮЧЕНИЕ NaN) */
+        let selectedRating = 0;
+        const starPickerSpans = document.querySelectorAll('#star-picker span');
+
+        starPickerSpans.forEach(span => {
+            span.addEventListener('mouseover', function() {
+                const val = parseInt(this.getAttribute('data-value'));
+                starPickerSpans.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= val) s.classList.add('hovered');
+                    else s.classList.remove('hovered');
+                });
+            });
+            span.addEventListener('mouseout', function() {
+                starPickerSpans.forEach(s => s.classList.remove('hovered'));
+            });
+            span.addEventListener('click', function() {
+                selectedRating = parseInt(this.getAttribute('data-value'));
+                starPickerSpans.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= selectedRating) s.classList.add('selected');
+                    else s.classList.remove('selected');
+                });
+            });
+        });
+
+        document.getElementById('review-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (selectedRating === 0) {
+                alert("Пожалуйста, выберите оценку в звездах.");
+                return;
+            }
+            const author = document.getElementById('rev-name').value.trim();
+            const text = document.getElementById('rev-text').value.trim();
+            const now = new Date();
+            const dateStr = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth()+1).toString().padStart(2, '0')}.${now.getFullYear()}`;
+
+            const newReview = {
+                id: Date.now(),
+                date: dateStr,
+                author: author,
+                text: text,
+                rating: selectedRating
+            };
+
+            db.reviews.unshift(newReview);
+            saveDB();
+            renderReviews();
+            renderAdminReviews();
+
+            this.reset();
+            selectedRating = 0;
+            starPickerSpans.forEach(s => s.classList.remove('selected'));
+        });
+
+        function renderReviews(filterKeyword = "") {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = "";
+
+            const filtered = db.reviews.filter(r => {
+                if (!filterKeyword) return true;
+                return r.author.toLowerCase().includes(filterKeyword.toLowerCase()) ||
+                       r.text.toLowerCase().includes(filterKeyword.toLowerCase());
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem; letter-spacing:1px;">Отзывов не найдено...</div>`;
+            }
+
+            filtered.forEach(r => {
+                let stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+                let div = document.createElement('div');
+                div.className = "review-item";
+                div.innerHTML = `<div class="review-meta"> <span class="review-author">${escapeHTML(r.author)}</span> <span class="review-date">${r.date}</span> </div> <div style="margin-bottom:10px; font-size:0.9rem; letter-spacing:1px;">${stars}</div> <p class="review-text">${escapeHTML(r.text)}</p>`;
+                container.appendChild(div);
+            });
+
+            calculateGlobalRating();
+        }
+
+        function calculateGlobalRating() {
+            const numDisplay = document.getElementById('average-rating-num');
+            const starsDisplay = document.getElementById('average-stars-render');
+
+            if (!db.reviews || db.reviews.length === 0) {
+                numDisplay.innerText = "0.0 / 5";
+                starsDisplay.innerText = "☆☆☆☆☆";
+                return;
+            }
+
+            let total = 0;
+            let validCount = 0;
+
+            for (let i = 0; i < db.reviews.length; i++) {
+                let val = parseInt(db.reviews[i].rating);
+                if (!isNaN(val) && val > 0 && val <= 5) {
+                    total += val;
+                    validCount++;
+                }
+            }
+
+            if (validCount === 0) {
+                numDisplay.innerText = "0.0 / 5";
+                starsDisplay.innerText = "☆☆☆☆☆";
+                return;
+            }
+
+            const avg = total / validCount;
+            if (isNaN(avg)) {
+                numDisplay.innerText = "0.0 / 5";
+                starsDisplay.innerText = "☆☆☆☆☆";
+                return;
+            }
+
+            numDisplay.innerText = `${avg.toFixed(1)} / 5`;
+            const roundedStars = Math.round(avg);
+            starsDisplay.innerText = "★".repeat(roundedStars) + "☆".repeat(5 - roundedStars);
+        }
+
+        document.getElementById('review-search').addEventListener('input', function() {
+            renderReviews(this.value);
+        });
+
+        /* 5. УПРАВЛЕНИЕ ВСТРОЕННОЙ ПАНЕЛЬЮ АДМИНИСТРАТОРА В ФУТЕРЕ */
+        const adminTrigger = document.getElementById('footer-admin-trigger');
+        const adminContainer = document.getElementById('footer-admin-container');
+        const authSection = document.getElementById('admin-auth-section');
+        const dashboardSection = document.getElementById('admin-dashboard-section');
+
+        adminTrigger.addEventListener('click', function() {
+            if (adminContainer.style.display === 'block') {
+                adminContainer.style.display = 'none';
+            } else {
+                adminContainer.style.display = 'block';
+                adminContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+        });
+
+        function handleAdminLogin() {
+            const log = document.getElementById('auth-login').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+
+            if (log === 'vileraslonim' && pass === '2026vileratop') {
+                authSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+                renderAdminBookings();
+                renderAdminReviews();
+            } else {
+                alert("Неверный логин или пароль администратора.");
+            }
+        }
+
+        function handleAdminLogout() {
+            document.getElementById('auth-login').value = "";
+            document.getElementById('auth-pass').value = "";
+            dashboardSection.style.display = 'none';
+            authSection.style.display = 'block';
+            adminContainer.style.display = 'none';
+        }
+
+        function switchAdminTab(tabName) {
+            document.getElementById('tab-btn-bookings').classList.remove('active');
+            document.getElementById('tab-btn-reviews').classList.remove('active');
+            document.getElementById('admin-tab-bookings').classList.remove('active');
+            document.getElementById('admin-tab-reviews').classList.remove('active');
+
+            if (tabName === 'bookings') {
+                document.getElementById('tab-btn-bookings').classList.add('active');
+                document.getElementById('admin-tab-bookings').classList.add('active');
+                renderAdminBookings();
+            } else {
+                document.getElementById('tab-btn-reviews').classList.add('active');
+                document.getElementById('admin-tab-reviews').classList.add('active');
+                renderAdminReviews();
+            }
+        }
+
+        function renderAdminBookings() {
+            const tbody = document.getElementById('admin-bookings-rows');
+            tbody.innerHTML = "";
+            const filter = document.getElementById('admin-filter-booking-cat').value;
+
+            const filtered = db.bookings.filter(b => filter === 'Все' || b.category === filter);
+
+            filtered.forEach(b => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${b.date}</td>
+                    <td>${b.category}</td>
+                    <td>${escapeHTML(b.name)}</td>
+                    <td><a href="tel:${b.phone}">${escapeHTML(b.phone)}</a></td>
+                    <td><button class="btn btn-danger" style="padding:2px 8px; font-size:0.7rem;" onclick="deleteBooking(${b.id})">Удалить</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteBooking(id) {
+            db.bookings = db.bookings.filter(b => b.id !== id);
+            saveDB();
+            renderAdminBookings();
+        }
+
+        function clearAllBookings() {
+            if (confirm("Вы действительно хотите полностью очистить журнал заявок?")) {
+                db.bookings = [];
+                saveDB();
+                renderAdminBookings();
+            }
+        }
+
+        function renderAdminReviews() {
+            const tbody = document.getElementById('admin-reviews-rows');
+            tbody.innerHTML = "";
+
+            db.reviews.forEach(r => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${r.date}</td>
+                    <td>${escapeHTML(r.author)}</td>
+                    <td style="max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHTML(r.text)}</td>
+                    <td>${"★".repeat(r.rating)}</td>
+                    <td><button class="btn btn-danger" style="padding:2px 8px; font-size:0.7rem;" onclick="deleteReview(${r.id})">Удалить</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteReview(id) {
+            db.reviews = db.reviews.filter(r => r.id !== id);
+            saveDB();
+            renderReviews();
+            renderAdminReviews();
+        }
+
+        function clearAllReviews() {
+            if (confirm("Удалить все опубликованные отзывы?")) {
+                db.reviews = [];
+                saveDB();
+                renderReviews();
+                renderAdminReviews();
+            }
+        }
+
+        /* МОДАЛКИ И СЛУЖЕБНЫЕ ФУНКЦИИ */
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g,
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        /* COOKIE БАННЕР */
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('vilera_cookie_consent')) {
+                setTimeout(() => {
+                    document.getElementById('cookie-popup').classList.add('active');
+                }, 1000);
+            }
+            renderReviews();
+        });
+
+        function acceptCookies() {
+            localStorage.setItem('vilera_cookie_consent', 'accepted');
+            document.getElementById('cookie-popup').classList.remove('active');
+        }
+
+        function rejectCookies() {
+            localStorage.setItem('vilera_cookie_consent', 'rejected');
+            document.getElementById('cookie-popup').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
