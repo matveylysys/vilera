@@ -1553,70 +1553,10 @@
             localStorage.setItem('vilera_cookie_consent', 'rejected');
             document.getElementById('cookie-popup').classList.remove('active');
         }
- }
-
-// -------------------------------------------------------------
-// ИНИЦИАЛИЗАЦИЯ SUPABASE И ОТПРАВКА ФОРМЫ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
-// -------------------------------------------------------------
 const SUPABASE_URL = "https://supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn";
-const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Находим форму записи внутри блока #booking
-    const bookingForm = document.querySelector("#booking form");
-    
-    if (bookingForm) {
-        // Удаляем старые обработчики, если они были прописаны в HTML атрибутах
-        bookingForm.removeAttribute("onsubmit");
-        
-        bookingForm.addEventListener("submit", async (event) => {
-            event.preventDefault(); // Запрещаем перезагрузку страницы
-            
-            // Находим поля ввода внутри формы
-            const nameInput = bookingForm.querySelector('input[type="text"]') || document.getElementById("name");
-            const phoneInput = bookingForm.querySelector('input[type="tel"]') || document.getElementById("phone");
-            const checkedRadio = bookingForm.querySelector('input[name="service"]:checked');
-            
-            // Собираем текст из выбранного радио-переключателя
-            let categoryText = "Стрижка и стиль";
-            if (checkedRadio) {
-                categoryText = checkedRadio.parentElement.textContent.trim();
-            }
-            
-            // Проверяем, заполнил ли клиент поля
-            if (!nameInput || !nameInput.value.trim()) {
-                alert("Пожалуйста, введите ваше имя");
-                return;
-            }
-            if (!phoneInput || !phoneInput.value.trim()) {
-                alert("Пожалуйста, введите ваш номер телефона");
-                return;
-            }
-
-            try {
-                // Прямая отправка в вашу таблицу bookings
-                const { data, error } = await supabase
-                    .from('bookings')
-                    .insert([
-                        { 
-                            name: nameInput.value.trim(), 
-                            phone: phoneInput.value.trim(), 
-                            category: categoryText,
-                            date: new Date().toLocaleString("ru-RU") // Текущее время записи
-                        }
-                    ]);
-
-                if (error) {
-                    console.error("Ошибка Supabase:", error.message);
-                    alert("Ошибка базы данных: " + error.message);
-                } else {
-                    alert("Запись успешно оформлена! Ждем вас в студии.");
-                    bookingForm.reset(); // Очищаем форму после успеха
-                }
-            } catch (err) {
-                console.error("Критический сбой отправки:", err);
-                alert("Не удалось отправить запись. Проверьте интернет-соединение.");
             }
         });
     }
@@ -1624,4 +1564,4 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-</html>
+
