@@ -1553,52 +1553,74 @@
             localStorage.setItem('vilera_cookie_consent', 'rejected');
             document.getElementById('cookie-popup').classList.remove('active');
         }
- const SUPABASE_URL = "https://supabase.co";
+ }
+
+// -------------------------------------------------------------
+// ИНИЦИАЛИЗАЦИЯ SUPABASE И ОТПРАВКА ФОРМЫ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+// -------------------------------------------------------------
+const SUPABASE_URL = "https://supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-// Автоматический перехват отправки формы
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Находим форму записи по тегу или id
-    const bookingForm = document.querySelector("form") || document.getElementById("booking-form");
+    // Находим форму записи внутри блока #booking
+    const bookingForm = document.querySelector("#booking form");
     
     if (bookingForm) {
+        // Удаляем старые обработчики, если они были прописаны в HTML атрибутах
+        bookingForm.removeAttribute("onsubmit");
+        
         bookingForm.addEventListener("submit", async (event) => {
-            event.preventDefault(); // Останавливаем перезагрузку страницы
+            event.preventDefault(); // Запрещаем перезагрузку страницы
             
-            // Собираем данные из полей вашей формы
-            // Проверьте, чтобы у ваших <input> в HTML были соответствующие id или class
-            const clientName = document.querySelector('input[type="text"]') ? document.querySelector('input[type="text"]').value : "Тест";
-            const clientPhone = document.querySelector('input[type="tel"]') ? document.querySelector('input[type="tel"]').value : "Без телефона";
-            const selectedCategory = document.querySelector('input[name="service"]:checked') ? document.querySelector('input[name="service"]:checked').parentElement.textContent.trim() : "Стрижка";
+            // Находим поля ввода внутри формы
+            const nameInput = bookingForm.querySelector('input[type="text"]') || document.getElementById("name");
+            const phoneInput = bookingForm.querySelector('input[type="tel"]') || document.getElementById("phone");
+            const checkedRadio = bookingForm.querySelector('input[name="service"]:checked');
             
+            // Собираем текст из выбранного радио-переключателя
+            let categoryText = "Стрижка и стиль";
+            if (checkedRadio) {
+                categoryText = checkedRadio.parentElement.textContent.trim();
+            }
+            
+            // Проверяем, заполнил ли клиент поля
+            if (!nameInput || !nameInput.value.trim()) {
+                alert("Пожалуйста, введите ваше имя");
+                return;
+            }
+            if (!phoneInput || !phoneInput.value.trim()) {
+                alert("Пожалуйста, введите ваш номер телефона");
+                return;
+            }
+
             try {
-                // Отправляем данные в вашу таблицу bookings
+                // Прямая отправка в вашу таблицу bookings
                 const { data, error } = await supabase
                     .from('bookings')
                     .insert([
                         { 
-                            name: clientName, 
-                            phone: clientPhone, 
-                            category: selectedCategory,
-                            date: new Date().toLocaleString("ru-RU") // Записываем текущую дату и время
+                            name: nameInput.value.trim(), 
+                            phone: phoneInput.value.trim(), 
+                            category: categoryText,
+                            date: new Date().toLocaleString("ru-RU") // Текущее время записи
                         }
                     ]);
 
                 if (error) {
                     console.error("Ошибка Supabase:", error.message);
-                    alert("Ошибка при записи: " + error.message);
+                    alert("Ошибка базы данных: " + error.message);
                 } else {
-                    alert("Вы успешно записались!");
-                    bookingForm.reset(); // Очищаем форму
+                    alert("Запись успешно оформлена! Ждем вас в студии.");
+                    bookingForm.reset(); // Очищаем форму после успеха
                 }
             } catch (err) {
-                console.error("Критическая ошибка:", err);
+                console.error("Критический сбой отправки:", err);
+                alert("Не удалось отправить запись. Проверьте интернет-соединение.");
             }
         });
     }
 });
-
-    </script>
+</script>
 </body>
 </html>
