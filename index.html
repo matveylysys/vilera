@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+    <script src="https://jsdelivr.net"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1092,13 +1093,50 @@
 
         /* БАЗА ДАННЫХ (localStorage) */
         let db = {
-            bookings: JSON.parse(localStorage.getItem('vilera_bookings')) || [],
-            reviews: JSON.parse(localStorage.getItem('vilera_reviews')) || []
-        };
+            // ПОДКЛЮЧЕНИЕ К ОБЛАКУ SUPABASE
+// (Сюда вы вставите URL и Ключ после регистрации на supabase.com)
+// Старое объявление базы (оставляем для структуры)
+let db = {
+    bookings: JSON.parse(localStorage.getItem('vilera_bookings')) || [],
+    reviews: JSON.parse(localStorage.getItem('vilera_reviews')) || []
+};
 
-        function saveDB() {
-            localStorage.setItem('vilera_bookings', JSON.stringify(db.bookings));
-            localStorage.setItem('vilera_reviews', JSON.stringify(db.reviews));
+// ПОДКЛЮЧЕНИЕ К ОБЛАКУ SUPABASE
+const SUPABASE_URL = 'https://jlwvxktxkgitmssxwszb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_3Lxy5Ggf8edZO9-MYIuu-Q_LBf4nUYn'; // Сюда ваш реальный Ключ
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ФУНКЦИЯ ДЛЯ ЗАГРУЗКИ ДАННЫХ ИЗ ИНТЕРНЕТА ПРИ СТАРТЕ САЙТА
+async function syncFromCloud() {
+    try {
+        const { data, error } = await _supabase.from('site_database').select('*');
+if (!error && data && data.length > 0 && data[0].content) {
+            db = data[0].content; // Перезаписываем базу актуальными данными из интернета
+            
+            // Принудительно обновляем все списки на странице
+            if (typeof renderReviews === 'function') renderReviews();
+            if (typeof renderAdminReviews === 'function') renderAdminReviews();
+            if (typeof calculateGlobalRating === 'function') calculateGlobalRating();
+            if (typeof renderAdminBookings === 'function') renderAdminBookings();
+        }
+    } catch (e) { console.error("Ошибка синхронизации:", e); }
+}
+
+// Запускаем синхронизацию сразу при открытии страницы
+syncFromCloud();
+
+      function saveDB() {
+    localStorage.setItem('vilera_bookings', JSON.stringify(db.bookings));
+    localStorage.setItem('vilera_reviews', JSON.stringify(db.reviews));
+    
+    // Синхронизация изменений с интернет-облаком
+    _supabase.from('site_database').select('*').then(({ data }) => {
+        if (data && data.length > 0) {
+            _supabase.from('site_database').update({ content: db }).eq('id', data[0].id);
+        }
+    });
+}
+
         }
 
         /* 1. ЭФФЕКТ ЖИВОГО ДЫМА (HTML5 Canvas) */
@@ -1323,9 +1361,23 @@
             };
 
             db.reviews.unshift(newReview);
-            saveDB();
-            renderReviews();
-            renderAdminReviews();
+         // ОТПРАВКА ОБНОВЛЕННОЙ БАЗЫ В ОБЛАКО
+_supabase.from('site_database').select('*').then(({ data }) => {
+    if (!data || data.length === 0) {
+        // Если в облаке еще нет записей, создаем первую
+        _supabase.from('site_database').insert([{ content: db }]).then(() => {
+            if (typeof renderReviews === 'function') renderReviews();
+            if (typeof renderAdminReviews === 'function') renderAdminReviews();
+        });
+    } else {
+        // Если запись есть, обновляем её актуальными отзывами
+        _supabase.from('site_database').update({ content: db }).eq('id', data[0].id).then(() => {
+            if (typeof renderReviews === 'function') renderReviews();
+            if (typeof renderAdminReviews === 'function') renderAdminReviews();
+        });
+    }
+});
+
 
             this.reset();
             selectedRating = 0;
